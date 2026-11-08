@@ -1,0 +1,64 @@
+/* ============ 主题：粗野主义 PRO ============ */
+body[data-theme="brutal"] .ticker { display: block; }
+
+body[data-theme="brutal"] .brand .logo {
+  box-shadow: 3px 3px 0 #141414;
+  transform: rotate(-2deg);
+}
+body[data-theme="brutal"] .icon-btn { box-shadow: 3px 3px 0 #141414; }
+body[data-theme="brutal"] .icon-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #141414; }
+
+/* 英雄卡：巨型数字替换圆环 */
+body[data-theme="brutal"] .ring-wrap { display: none; }
+body[data-theme="brutal"] .giant-num {
+  display: block;
+  font-size: 62px;
+  -webkit-text-stroke: 2px #141414;
+  color: #FFD93D;
+  text-shadow: 5px 5px 0 #141414;
+}
+body[data-theme="brutal"] .giant-num .gunit { font-size: 15px; -webkit-text-stroke: 0; color: #454545; text-shadow: none; font-weight: 800; letter-spacing: 0; }
+body[data-theme="brutal"] .hero-card { flex-direction: column; align-items: stretch; gap: 0; padding: 18px 16px; }
+body[data-theme="brutal"] .hero-card::after {
+  content: ""; display: block; height: 10px; margin-top: 14px;
+  background: repeating-linear-gradient(90deg, #141414 0 12px, transparent 12px 20px);
+  border-top: 3px solid #141414;
+}
+body[data-theme="brutal"] .hero-side { flex-direction: row; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; font-weight: 700; padding-top: 12px; }
+body[data-theme="brutal"] .streak-chip { border: 2px solid #141414; background: #FFD93D; color: #141414; box-shadow: 2px 2px 0 #141414; }
+
+/* 卡片描边阴影由令牌给出；强化卡片标题 */
+body[data-theme="brutal"] .card-title { font-weight: 900; }
+body[data-theme="brutal"] .meal-head { border-top: 3px solid #141414; border-bottom: 2px dashed #141414; padding-left: 0; padding-right: 0; }
+body[data-theme="brutal"] .meal-group { padding: 0 16px 10px; }
+body[data-theme="brutal"] .meal-head .micon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: #FFD93D; border: 2px solid #141414; border-radius: 7px; box-shadow: 2px 2px 0 #141414; font-size: 12px; }
+
+body[data-theme="brutal"] .badge-est { border: 1.5px solid #141414; color: #141414; background: #FFF3D6; font-weight: 800; }
+body[data-theme="brutal"] .badge-est.precise { background: #B5E48C; }
+body[data-theme="brutal"] .food-row { border-top: 2px dashed #D8D2C0; font-weight: 600; }
+
+body[data-theme="brutal"] .macro-track { border: 2px solid #141414; height: 14px; border-radius: 8px; background: #fff; }
+body[data-theme="brutal"] .macro-fill.prot { background: #FFD93D; }
+body[data-theme="brutal"] .macro-fill.carb { background: #A0C4FF; }
+body[data-theme="brutal"] .macro-fill.fat { background: #B5E48C; }
+body[data-theme="brutal"] .macro-row .mlabel { font-weight: 800; }
+
+body[data-theme="brutal"] .range-toggle button { border: 2px solid #141414; font-weight: 800; box-shadow: 2px 2px 0 #141414; }
+body[data-theme="brutal"] .range-toggle button.active { background: #FFD93D; color: #141414; border-color: #141414; }
+
+body[data-theme="brutal"] .sheet { border-width: 3px; box-shadow: 8px 8px 0 rgba(0,0,0,.75); }
+body[data-theme="brutal"] .chips button { border-width: 2px; font-weight: 800; box-shadow: 2px 2px 0 #141414; }
+body[data-theme="brutal"] .chips button.active { background: #FFD93D; color: #141414; border-color: #141414; }
+body[data-theme="brutal"] .primary-btn { border-width: 3px; box-shadow: 4px 4px 0 #141414; }
+body[data-theme="brutal"] .primary-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #141414; }
+body[data-theme="brutal"] .ghost-btn { border-width: 2px; font-weight: 800; }
+body[data-theme="brutal"] .opt { border-width: 2.5px; box-shadow: 3px 3px 0 #141414; font-weight: 600; }
+body[data-theme="brutal"] .opt.selected { background: #FFF3D6; }
+body[data-theme="brutal"] .onboard-progress i { height: 8px; border: 2px solid #141414; background: #fff; }
+body[data-theme="brutal"] .onboard-progress i.active { background: #FF5A3C; }
+body[data-theme="brutal"] .fab { border-width: 3px; background: #FF5A3C; }
+body[data-theme="brutal"] .summary-box { border-width: 2.5px; box-shadow: 4px 4px 0 #141414; }
+
+/* 终端专用元素确保隐藏 */
+body[data-theme="brutal"] .ascii-bar { display: none !important; }
+body[data-theme="brutal"] .crt { display: none !important; }

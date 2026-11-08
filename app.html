@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFFDF4">
+<title>吃了么 v2 · 今日饮食</title>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/theme-brutal.css">
+<link rel="stylesheet" href="assets/css/theme-terminal.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body data-theme="brutal">
+
+<div class="ticker"><div class="ticker-inner" id="tickerInner">吃了么 V2 ✦</div></div>
+<div class="crt"></div>
+
+<div class="shell">
+  <!-- 顶栏 -->
+  <header class="top">
+    <div class="brand">
+      <span class="logo">吃</span>
+      <span class="name">吃了么</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="glossaryBtn" title="营养小词典">📖</button>
+      <button class="icon-btn" id="dbBtn" title="食物数据库">📦</button>
+      <button class="icon-btn" id="profileBtn" title="编辑档案">✏️</button>
+      <button class="icon-btn" id="shareBtn" title="分享">📤</button>
+      <button class="icon-btn" id="themeBtn" title="切换主题">🧱</button>
+    </div>
+  </header>
+
+  <!-- 日期导航 -->
+  <div class="datebar">
+    <button class="nav-btn" id="dPrev">◀</button>
+    <span class="dlabel" id="dLabel">--</span>
+    <button class="nav-btn" id="dNext">▶</button>
+  </div>
+
+  <!-- 热量英雄卡 -->
+  <section class="card hero-card">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 120 120" role="img" aria-label="今日热量进度">
+        <circle class="ring-track" cx="60" cy="60" r="50" fill="none" stroke-width="11"/>
+        <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="50" fill="none" stroke-width="11"
+          stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16"
+          transform="rotate(-90 60 60)"/>
+        <text class="ring-num-text" id="ringNum" x="60" y="57" text-anchor="middle">0</text>
+        <text class="ring-unit-text" id="ringPct" x="60" y="73" text-anchor="middle"></text>
+      </svg>
+    </div>
+    <div class="giant-num" id="giantNum"></div>
+    <div>
+      <div class="ascii-bar" id="asciiBar"></div>
+      <div class="hero-side">
+        <span class="krow"><span class="kdot"></span>已摄入 <b class="num" id="kIntake">0</b></span>
+        <span class="krow rest"><span class="kdot"></span>剩余 <b class="num" id="kRest">0</b></span>
+        <span class="krow plan"><span class="kdot"></span>目标 <b class="num" id="kGoal">0</b></span>
+        <span class="streak-chip" id="streakChip"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 营养素概览 -->
+  <section class="card">
+    <div class="card-title">📊 营养素概览</div>
+    <div class="macro-row"><span class="mlabel">🥩 蛋白质</span>
+      <div class="macro-track"><div class="macro-fill prot" id="mProt" style="width:0%"></div></div>
+      <span class="mval num" id="mProtVal">0 / 0g</span></div>
+    <div class="macro-row"><span class="mlabel">🌾 碳水</span>
+      <div class="macro-track"><div class="macro-fill carb" id="mCarb" style="width:0%"></div></div>
+      <span class="mval num" id="mCarbVal">0 / 0g</span></div>
+    <div class="macro-row"><span class="mlabel">🥑 脂肪</span>
+      <div class="macro-track"><div class="macro-fill fat" id="mFat" style="width:0%"></div></div>
+      <span class="mval num" id="mFatVal">0 / 0g</span></div>
+    <div class="macro-notice" id="macroNotice" style="display:none">部分条目为分类估算，点击条目上的「≈估」可修正（修改会永久保存）</div>
+  </section>
+
+  <!-- 饮食明细 -->
+  <section>
+    <div id="emptyDay" class="card empty-day"><div class="big">🍽️</div>今天还没吃东西<br>点击右下角 + 记录第一餐</div>
+    <div id="mealsList"></div>
+  </section>
+
+  <!-- 体重趋势 -->
+  <section class="card">
+    <div class="card-title">⚖️ 体重趋势 <span class="sub">最近 7 次记录</span>
+      <span class="range-toggle"><button id="weightEditBtn">+ 记录</button></span></div>
+    <div class="weight-now"><b class="num" id="weightNow">--</b><span>kg</span>
+      <span class="delta-down" id="weightDelta" style="display:none"></span></div>
+    <canvas class="chart-canvas" id="weightCanvas" aria-label="体重折线图"></canvas>
+  </section>
+
+  <!-- 热量历史 -->
+  <section class="card">
+    <div class="card-title">📈 热量历史
+      <span class="range-toggle">
+        <button id="rangeWeek" class="active">周</button>
+        <button id="rangeMonth">月</button>
+      </span></div>
+    <canvas class="chart-canvas" id="histCanvas" aria-label="热量历史柱状图"></canvas>
+  </section>
+
+  <footer class="app-footer">
+    吃了么 v2 · 本地优先 · <a href="https://github.com/cnjoe1130/chileme-v2" target="_blank" rel="noopener">GitHub</a>
+    <span id="syncState"></span>
+  </footer>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" title="记录一餐">＋</button>
+
+<!-- 分享菜单 -->
+<div class="popover" id="shareMenu">
+  <button id="btnShareCard">🖼️ 生成分享卡片</button>
+  <button id="btnExport">📦 导出全部数据</button>
+  <button id="btnReset" class="danger">🗑️ 重置所有数据</button>
+</div>
+
+<!-- 添加食物 -->
+<div class="overlay" id="addSheet">
+  <div class="sheet">
+    <div class="sheet-head"><h2>记录一餐</h2><button class="close" data-close="addSheet">✕</button></div>
+    <div class="field search-wrap">
+      <label>食物</label>
+      <input id="foodSearch" type="text" placeholder="搜索 381 条食物库，或直接输入名称" autocomplete="off">
+      <div class="food-dropdown" id="foodDropdown" style="display:none"></div>
+    </div>
+    <div class="field"><label>餐次</label><div class="chips" id="mealChips"></div></div>
+    <div class="grid3">
+      <div class="field"><label>热量 kcal</label><input id="kcal" type="number" inputmode="decimal" placeholder="100"></div>
+      <div class="field"><label>数量</label><input id="qty" type="number" inputmode="decimal" value="1" step="0.5"></div>
+      <div class="field"><label>单位</label><input id="unit" type="text" placeholder="碗/份/个"></div>
+    </div>
+    <div class="kcal-preview" id="kcalPreview"></div>
+    <button class="primary-btn" id="addBtn">＋ 添加</button>
+  </div>
+</div>
+
+<!-- 营养素修正 -->
+<div class="overlay" id="macroSheet">
+  <div class="sheet center">
+    <div class="sheet-head"><h2>修正营养素 · <span id="macroEditName">--</span></h2><button class="close" data-close="macroSheet">✕</button></div>
+    <div class="grid3">
+      <div class="field"><label>蛋白质 g</label><input id="mEP" type="number" inputmode="decimal"></div>
+      <div class="field"><label>碳水 g</label><input id="mEC" type="number" inputmode="decimal"></div>
+      <div class="field"><label>脂肪 g</label><input id="mEF" type="number" inputmode="decimal"></div>
+    </div>
+    <div class="field"><div class="hint">修改会永久保存（跨天生效），并回写当日同名条目。</div></div>
+    <button class="primary-btn" id="saveMacroBtn">保存</button>
+  </div>
+</div>
+
+<!-- 体重 -->
+<div class="overlay" id="weightSheet">
+  <div class="sheet center">
+    <div class="sheet-head"><h2>记录体重</h2><button class="close" data-close="weightSheet">✕</button></div>
+    <div class="field"><label>体重 kg</label><input id="weightInput" type="number" inputmode="decimal" placeholder="76.5"></div>
+    <div class="field"><div class="hint">同一日期重复记录会覆盖；建议早晨空腹称。</div></div>
+    <button class="primary-btn" id="saveWeightBtn">保存</button>
+  </div>
+</div>
+
+<!-- 词典 -->
+<div class="overlay" id="glossarySheet">
+  <div class="sheet center">
+    <div class="sheet-head"><h2>📖 营养小词典</h2><button class="close" data-close="glossarySheet">✕</button></div>
+    <div id="glossaryBody"></div>
+  </div>
+</div>
+
+<!-- 数据库 -->
+<div class="overlay" id="dbSheet">
+  <div class="sheet center">
+    <div class="sheet-head"><h2>📦 食物数据库</h2><button class="close" data-close="dbSheet">✕</button></div>
+    <div class="field db-search"><input id="dbSearch" type="text" placeholder="搜索食物" autocomplete="off"></div>
+    <div id="dbBody" style="max-height:44vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- 分享卡片舞台 -->
+<div id="shareStage">
+  <div class="share-card" id="shareCardBox"></div>
+  <div class="stage-actions">
+    <button id="stageDownload">💾 保存 PNG</button>
+    <button id="stageCopy">📋 复制文本</button>
+    <button id="stageClose">✕ 关闭</button>
+  </div>
+</div>
+
+<!-- 引导向导 -->
+<div class="onboard" id="onboard">
+  <div class="onboard-inner">
+    <div class="onboard-top"><h1>吃了么 v2</h1><button class="onboard-skip" id="obSkip">跳过</button></div>
+    <div class="onboard-progress" id="obProgress"><i class="active"></i><i></i><i></i><i></i></div>
+    <div class="onboard-body" id="obBody"></div>
+    <div class="onboard-nav">
+      <button class="ghost-btn back" id="obBack">←</button>
+      <button class="primary-btn" id="obNext" style="margin-top:0">下一步</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

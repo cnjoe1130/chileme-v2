@@ -1,0 +1,82 @@
+/* ============ 吃了么 v2 · 设计令牌 ============ */
+:root {
+  /* 字体 */
+  --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-num: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+
+  /* 中性基调（无主题时的兜底皮肤） */
+  --bg: #F6F7FA;
+  --bg-2: #FFFFFF;
+  --ink: #22252B;
+  --ink-2: #6B7280;
+  --ink-3: #9AA1AE;
+  --line: #E6E8EE;
+  --accent: #4F7CF0;
+  --accent-ink: #FFFFFF;
+  --green: #34B27B;
+  --yellow: #E3A008;
+  --red: #E05252;
+
+  /* 结构变量：主题文件可整体覆盖 */
+  --border-w: 1px;
+  --border-c: var(--line);
+  --shadow-card: 0 1px 3px rgba(30, 40, 60, .07);
+  --shadow-fab: 0 6px 16px rgba(79, 124, 240, .35);
+  --radius-card: 18px;
+  --radius-row: 12px;
+  --radius-fab: 18px;
+  --ring-track: rgba(120, 130, 150, .18);
+  --hero-gradient: var(--accent);
+
+  /* 动效 */
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --speed: .25s;
+}
+
+/* 主题 = 粗野主义 */
+body[data-theme="brutal"] {
+  --font-body: "Noto Sans SC", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --bg: #FFFDF4;
+  --bg-2: #FFFFFF;
+  --ink: #141414;
+  --ink-2: #454545;
+  --ink-3: #8A8A8A;
+  --line: #141414;
+  --accent: #FF5A3C;
+  --accent-ink: #FFFFFF;
+  --green: #B5E48C;
+  --yellow: #FFD93D;
+  --red: #FF8FA3;
+  --border-w: 2.5px;
+  --border-c: #141414;
+  --shadow-card: 5px 5px 0 #141414;
+  --shadow-fab: 4px 4px 0 #141414;
+  --radius-card: 16px;
+  --radius-row: 10px;
+  --radius-fab: 50%;
+  --ring-track: #EFE9DA;
+}
+
+/* 主题 = 复古终端 */
+body[data-theme="terminal"] {
+  --font-body: ui-monospace, "Cascadia Mono", Consolas, "Courier New", "PingFang SC", monospace;
+  --bg: #050805;
+  --bg-2: rgba(125, 240, 125, .04);
+  --ink: #7DF07D;
+  --ink-2: #3E7A42;
+  --ink-3: #2E5F33;
+  --line: rgba(125, 240, 125, .25);
+  --accent: #FFD97D;
+  --accent-ink: #050805;
+  --green: #7DF07D;
+  --yellow: #FFD97D;
+  --red: #FFB347;
+  --border-w: 1px;
+  --border-c: rgba(125, 240, 125, .22);
+  --shadow-card: none;
+  --shadow-fab: 0 0 18px rgba(125, 240, 125, .3);
+  --radius-card: 8px;
+  --radius-row: 6px;
+  --radius-fab: 12px;
+  --ring-track: rgba(125, 240, 125, .15);
+}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>吃了么 v2 · AI 饮食记录</title>
+<style>
+:root {
+  --bg:#FFFDF4; --card:#FFFFFF; --ink:#141414; --ink-2:#454545; --ink-3:#8A8A8A;
+  --line:#141414; --accent:#FF5A3C; --yellow:#FFD93D;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+* { box-sizing:border-box; margin:0; padding:0 }
+body { background:var(--bg); color:var(--ink); font-family:var(--font); line-height:1.65; -webkit-font-smoothing:antialiased }
+a { color:inherit }
+.shell { max-width:680px; margin:0 auto; padding:0 24px 80px }
+
+/* 复古终端皮肤（?theme=terminal） */
+body[data-theme="terminal"] {
+  --bg:#050805; --card:rgba(125,240,125,.04); --ink:#7DF07D; --ink-2:#3E7A42; --ink-3:#2E5F33;
+  --line:rgba(125,240,125,.25); --accent:#FFD97D; --yellow:#FFD97D;
+  font-family:var(--mono);
+}
+body[data-theme="terminal"] .crt { display:block }
+.crt { display:none; position:fixed; inset:0; z-index:50; pointer-events:none;
+  background:radial-gradient(120% 95% at 50% 42%, transparent 62%, rgba(0,0,0,.55) 100%),
+  repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px) }
+
+.top { display:flex; justify-content:space-between; align-items:center; padding:26px 0 0; font-size:13px; font-weight:700 }
+body[data-theme="terminal"] .top { text-shadow:0 0 8px rgba(125,240,125,.45) }
+.top a { text-decoration:underline; text-underline-offset:3px }
+
+.hero { padding:70px 0 56px; text-align:center }
+.hero .emoji { font-size:52px }
+h1 { font-size:clamp(34px,7vw,54px); font-weight:900; letter-spacing:-.02em; line-height:1.12; margin:14px 0 16px }
+h1 em { font-style:normal; background:var(--yellow); padding:0 .18em; box-shadow:.12em .12em 0 var(--line) }
+body[data-theme="terminal"] h1 em { background:transparent; box-shadow:none; color:var(--yellow); border-bottom:3px solid var(--yellow); text-shadow:0 0 14px rgba(255,217,125,.55); padding:0 .06em }
+.lede { font-size:16px; color:var(--ink-2); max-width:44ch; margin:0 auto }
+
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:38px 0 0 }
+.stat { background:var(--card); border:2.5px solid var(--line); border-radius:16px; padding:18px 12px; text-align:center; box-shadow:4px 4px 0 var(--line) }
+body[data-theme="terminal"] .stat { border-width:1px; box-shadow:none }
+.stat b { display:block; font-size:26px; font-weight:900; color:var(--accent); font-family:var(--mono) }
+.stat span { font-size:12px; color:var(--ink-3) }
+
+.features { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px }
+.feature { background:var(--card); border:2.5px solid var(--line); border-radius:16px; padding:20px; box-shadow:4px 4px 0 var(--line); transition:transform .2s }
+.feature:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--line) }
+body[data-theme="terminal"] .feature { border-width:1px; box-shadow:none }
+.feature h3 { font-size:15px; font-weight:800; margin-bottom:6px }
+.feature p { font-size:13px; color:var(--ink-2) }
+.feature .fi { font-size:22px; margin-bottom:8px }
+
+.section { margin-top:52px; border-top:2px dashed var(--line); padding-top:36px }
+body[data-theme="terminal"] .section { border-top-style:solid }
+.eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:.15em; color:var(--accent); font-weight:700; margin-bottom:8px }
+.section h2 { font-size:clamp(22px,4vw,30px); font-weight:900; letter-spacing:-.01em }
+
+.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px }
+.step h3 { font-size:14.5px; font-weight:800; margin:6px 0 4px }
+.step .n { font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:700 }
+.step p { font-size:12.5px; color:var(--ink-2) }
+
+.themes { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px }
+.theme-card { display:block; text-decoration:none; background:var(--card); border:2.5px solid var(--line); border-radius:16px; padding:22px; box-shadow:4px 4px 0 var(--line); transition:transform .2s }
+.theme-card:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--line) }
+.theme-card .tc-emoji { font-size:30px }
+.theme-card h3 { font-size:16px; font-weight:900; margin:10px 0 4px }
+.theme-card p { font-size:12.5px; color:var(--ink-2) }
+.theme-card .go { display:inline-block; margin-top:12px; font-size:12.5px; font-weight:800; background:var(--accent); color:var(--yellow); padding:6px 14px; border-radius:999px; border:2px solid var(--line) }
+body[data-theme="terminal"] .theme-card { border-width:1px; box-shadow:none }
+body[data-theme="terminal"] .theme-card .go { border-width:1px }
+
+.quote { text-align:center; padding:44px 0 }
+.quote p { font-size:clamp(17px,3vw,22px); font-weight:700; font-style:italic; color:var(--ink-2) }
+.quote cite { font-size:12px; color:var(--ink-3); font-style:normal }
+
+.cta { text-align:center }
+.btn { display:inline-flex; align-items:center; gap:8px; padding:15px 34px; border-radius:999px; font-size:15.5px; font-weight:800; text-decoration:none; transition:transform .2s }
+.btn.primary { background:var(--accent); color:var(--yellow); border:2.5px solid var(--line); box-shadow:5px 5px 0 var(--line) }
+.btn.primary:hover { transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--line) }
+body[data-theme="terminal"] .btn.primary { border-width:1px; box-shadow:0 0 24px rgba(255,217,125,.25) }
+.btn.ghost { border:2.5px solid var(--line); color:var(--ink); background:transparent }
+body[data-theme="terminal"] .btn.ghost { border-width:1px }
+.cta .row { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:24px }
+.cta .note { font-size:12px; color:var(--ink-3); margin-top:14px }
+
+footer { border-top:2px dashed var(--line); margin-top:56px; padding-top:22px; text-align:center; font-size:12px; color:var(--ink-3) }
+body[data-theme="terminal"] footer { border-top-style:solid }
+
+@media (max-width:560px) {
+  .features,.themes,.steps { grid-template-columns:1fr }
+  .stats { gap:10px }
+}
+</style>
+</head>
+<body data-theme="brutal">
+<div class="crt"></div>
+<div class="shell">
+
+  <header class="top">
+    <span>🧱 吃了么 v2</span>
+    <a href="https://github.com/cnjoe1130/chileme-v2" target="_blank" rel="noopener">GitHub →</a>
+  </header>
+
+  <section class="hero">
+    <div class="emoji">🍽️</div>
+    <h1>今天<em>吃了么</em>？</h1>
+    <p class="lede">输入食物，自动计算热量与三大营养素。本地优先、双主题皮肤、AI 命令行同步 —— 把每一餐吃得清清楚楚。</p>
+    <div class="stats">
+      <div class="stat"><b>381</b><span>条食物数据库</span></div>
+      <div class="stat"><b>2</b><span>套可切换主题</span></div>
+      <div class="stat"><b>0</b><span>依赖安装</span></div>
+    </div>
+  </section>
+
+  <section class="section" style="border-top:none;padding-top:0;margin-top:20px">
+    <div class="eyebrow">FEATURES</div>
+    <h2>做减法，但做透</h2>
+    <div class="features">
+      <div class="feature"><div class="fi">🔍</div><h3>打分搜索</h3><p>全等 / 前缀 / 包含 / 模糊子序列四级匹配，381 条库内秒出，也支持手输自定义。</p></div>
+      <div class="feature"><div class="fi">🚦</div><h3>红绿灯标注</h3><p>🟢 蔬果低卡放心吃 · 🟡 主食乳品适量 · 🔴 零食外食少碰，一眼看清。</p></div>
+      <div class="feature"><div class="fi">🎯</div><h3>目标管理</h3><p>Mifflin-St Jeor 公式算 BMR/TDEE，减脂 -500、增肌 +300 一键设定。</p></div>
+      <div class="feature"><div class="fi">🔒</div><h3>本地优先</h3><p>数据存自己手里：localStorage + 可选本地服务器 + 备份自动恢复，离线全功能。</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">THEMES</div>
+    <h2>两套皮肤，一键切换</h2>
+    <div class="themes">
+      <a class="theme-card" href="app.html?theme=brutal">
+        <div class="tc-emoji">🧱</div>
+        <h3>粗野主义</h3>
+        <p>粗黑描边、硬投影、巨型描边数字与滚动 ticker。张扬，适合分享。</p>
+        <span class="go">以此皮肤启动 →</span>
+      </a>
+      <a class="theme-card" href="app.html?theme=terminal">
+        <div class="tc-emoji">🖥️</div>
+        <h3>复古终端</h3>
+        <p>CRT 扫描线、荧光绿等宽字体、ASCII 图表。极客，适合深夜。</p>
+        <span class="go">以此皮肤启动 →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow">HOW IT WORKS</div>
+    <h2>三步开始</h2>
+    <div class="steps">
+      <div class="step"><div class="n">STEP 01</div><h3>设定目标</h3><p>性别/年龄/身高/体重 + 活动量，自动算出每日推荐摄入。</p></div>
+      <div class="step"><div class="n">STEP 02</div><h3>记录饮食</h3><p>搜索添加，红绿灯即时反馈，每餐热量与营养素实时汇总。</p></div>
+      <div class="step"><div class="n">STEP 03</div><h3>追踪趋势</h3><p>体重折线 + 热量历史周/月图，AI 命令行还能替你记录。</p></div>
+    </div>
+  </section>
+
+  <section class="section quote">
+    <p>"你吃什么，你就是什么。"</p>
+    <cite>— Victor Lindlahr, 1923</cite>
+  </section>
+
+  <section class="cta">
+    <div class="row">
+      <a class="btn primary" href="app.html?theme=brutal">🧱 粗野启动</a>
+      <a class="btn ghost" href="app.html?theme=terminal">🖥️ 终端启动</a>
+    </div>
+    <div class="note">纯静态 · 零构建 · 数据永不离开你的设备（除非你选择开启本地同步）</div>
+  </section>
+
+  <footer>
+    吃了么 v2 · 全面重设计的第二代 · <a href="https://github.com/cnjoe1130" target="_blank" rel="noopener">@cnjoe1130</a>
+  </footer>
+
+</div>
+<script>
+  // 落地页皮肤：?theme=terminal / brutal
+  (function () {
+    var t = new URLSearchParams(location.search).get("theme");
+    if (t === "terminal" || t === "brutal") document.body.dataset.theme = t;
+  })();
+</script>
+</body>
+</html>
